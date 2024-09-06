@@ -1,4 +1,4 @@
-package github.com/SR-G/sul
+package sul
 
 import (
 	"bytes"
