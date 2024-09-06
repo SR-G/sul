@@ -1,4 +1,4 @@
-package sul
+package github.com/SR-G/sul
 
 import (
 	"crypto/sha256"

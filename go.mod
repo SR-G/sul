@@ -1,4 +1,4 @@
-module sul
+module github.com/SR-G
 
 go 1.23.0
 
