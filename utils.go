@@ -22,6 +22,29 @@ func humanizeValue(i int64, typeOfValue string) string {
 	}
 }
 
+func HumanizeFileSize(b int64) string {
+	const unit = 1000
+	if b < unit {
+		return fmt.Sprintf("%d B", b)
+	}
+	div, exp := int64(unit), 0
+	for n := b / unit; n >= unit; n /= unit {
+		div *= unit
+		exp++
+	}
+	return fmt.Sprintf("%.1f %cB",
+		float64(b)/float64(div), "kMGTPE"[exp])
+}
+
+func IsExtensionAllowed(fileExtension string, allowedExtensions []string) bool {
+	for _, ext := range allowedExtensions {
+		if strings.EqualFold(fileExtension, ext) {
+			return true
+		}
+	}
+	return false
+}
+
 // humanizeDuration humanizes time.Duration output to a meaningful value,
 // golang's default “time.Duration“ output is badly formatted and unreadable.
 func HumanizeDuration(duration time.Duration) string {

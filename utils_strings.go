@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"math/rand"
+	"strings"
 )
 
 var LETTERS = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
@@ -21,4 +22,11 @@ func AsSha256(o interface{}) string {
 	h.Write([]byte(fmt.Sprintf("%v", o)))
 
 	return fmt.Sprintf("%x", h.Sum(nil))
+}
+
+func ReallySplit(s, sep string) []string {
+	if len(s) == 0 {
+		return []string{}
+	}
+	return strings.Split(s, sep)
 }

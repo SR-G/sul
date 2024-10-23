@@ -18,6 +18,14 @@ func FileExists(filename string) bool {
 	return !info.IsDir()
 }
 
+func IsFileAvailable(s string) bool {
+	if stat, err := os.Stat(s); err == nil && !stat.IsDir() {
+		return true
+	} else {
+		return false
+	}
+}
+
 func WriteGZippedFile(filename string, data []byte, perm fs.FileMode) error {
 	var b bytes.Buffer
 	gz := gzip.NewWriter(&b)
