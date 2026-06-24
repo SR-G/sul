@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"math"
+	"os"
 	"strings"
 	"time"
 )
@@ -111,4 +112,20 @@ func Unmarshal(raw json.RawMessage, destination interface{}) error {
 		return err
 	}
 	return nil
+}
+
+func GetEnvWithDefaultString(key string, defaultValue string) string {
+	value := os.Getenv(key)
+	if value == "" {
+		return defaultValue
+	}
+	return value
+}
+
+func GetEnvWithDefaultBool(key string, defaultValue bool) bool {
+	value := os.Getenv(key)
+	if value == "" {
+		return defaultValue
+	}
+	return value == "true"
 }

@@ -82,3 +82,10 @@ func ReallySplit(s, sep string) []string {
 	}
 	return strings.Split(s, sep)
 }
+
+func SplitAny(s string, separators string) []string {
+	splitter := func(r rune) bool {
+		return strings.ContainsRune(separators, r)
+	}
+	return strings.FieldsFunc(s, splitter)
+}
