@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -120,6 +121,18 @@ func GetEnvWithDefaultString(key string, defaultValue string) string {
 		return defaultValue
 	}
 	return value
+}
+
+func GetEnvWithDefaultInt(key string, defaultValue int) int {
+	value := os.Getenv(key)
+	if value == "" {
+		return defaultValue
+	}
+	result, err := strconv.Atoi(value)
+	if err != nil {
+		return defaultValue
+	}
+	return result
 }
 
 func GetEnvWithDefaultBool(key string, defaultValue bool) bool {
