@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"net/http"
 	"os"
 	"strings"
 )
@@ -32,6 +33,16 @@ func IsFileAvailable(s string) bool {
 	} else {
 		return false
 	}
+}
+
+func IsSymlinkAvailableOnFilesystem(symlink string) bool {
+	info, err := os.Lstat(symlink)
+	if err != nil {
+		return false
+	} else if info.Mode()&os.ModeSymlink != 0 {
+		return true
+	}
+	return false
 }
 
 func WriteGZippedFile(filename string, data []byte, perm fs.FileMode) error {
@@ -72,6 +83,32 @@ func ReadContent(filename string) ([]byte, error) {
 		return nil, fmt.Errorf("can't read file content from [%s] %s", filename, err)
 	}
 	return content, nil
+}
+
+func WriteStringToFile(filename string, content string) error {
+	f, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	if _, err := f.WriteString(content); err != nil {
+		return err
+	}
+	return nil
+}
+
+func FetchURLContent(url string) (string, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	return string(body), nil
 }
 
 func AddTrailingSlashIfNeeded(s string) string {

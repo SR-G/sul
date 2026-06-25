@@ -142,3 +142,17 @@ func GetEnvWithDefaultBool(key string, defaultValue bool) bool {
 	}
 	return value == "true"
 }
+
+func ImplementsInterface[T any](obj any) bool {
+	_, ok := obj.(T)
+	return ok
+}
+
+func PrettyPrintJson(data any) (string, error) {
+	b, err := json.MarshalIndent(data, "", "  ")
+	if err != nil {
+		return "", err
+	} else {
+		return string(b), nil
+	}
+}

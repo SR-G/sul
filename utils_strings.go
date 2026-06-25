@@ -89,3 +89,23 @@ func SplitAny(s string, separators string) []string {
 	}
 	return strings.FieldsFunc(s, splitter)
 }
+
+func ContainsI(a string, b string) bool {
+	return strings.Contains(
+		strings.ToLower(a),
+		strings.ToLower(b),
+	)
+}
+
+func RegexpReplaceAll(s string, r string, repl string) string {
+	re := regexp.MustCompile(r)
+	return re.ReplaceAllString(s, repl)
+}
+
+func ReplacePlaceholders(template string, replacements map[string]string) string {
+	result := template
+	for key, value := range replacements {
+		result = strings.ReplaceAll(result, "{"+key+"}", value)
+	}
+	return result
+}

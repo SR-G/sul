@@ -15,10 +15,13 @@ Are covered :
 ### Push a new version
 
 ```bash
-TAG="v0.0.6"
+TAG="v0.0.7"
+git add .
+git commit -m"Preparing tag ${TAG}"
 git push origin :refs/tags/${TAG}
 git tag -f ${TAG}
 git push origin --tags 
+git push origin master
 ```
 
 ### TODO
