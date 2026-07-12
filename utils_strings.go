@@ -12,7 +12,14 @@ import (
 	"golang.org/x/text/language"
 )
 
-var LETTERS = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+const (
+	PROTOCOL_HTTP  = "http://"
+	PROTOCOL_HTTPS = "https://"
+)
+
+var (
+	LETTERS = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+)
 
 func Slugify(s string) string {
 	// Convert to lowercase
@@ -90,10 +97,18 @@ func SplitAny(s string, separators string) []string {
 	return strings.FieldsFunc(s, splitter)
 }
 
-func ContainsI(a string, b string) bool {
+func Contains(s string, searched string, insensitive bool) bool {
+	if insensitive {
+		return ContainsI(s, searched)
+	} else {
+		return strings.Contains(s, searched)
+	}
+}
+
+func ContainsI(s string, searched string) bool {
 	return strings.Contains(
-		strings.ToLower(a),
-		strings.ToLower(b),
+		strings.ToLower(s),
+		strings.ToLower(searched),
 	)
 }
 
@@ -108,4 +123,29 @@ func ReplacePlaceholders(template string, replacements map[string]string) string
 		result = strings.ReplaceAll(result, "{"+key+"}", value)
 	}
 	return result
+}
+
+func FileNameWithoutExtension(fileName string) string {
+	if pos := strings.LastIndexByte(fileName, '.'); pos != -1 {
+		return fileName[:pos]
+	}
+	return fileName
+}
+
+func IsURLValid(url string) error {
+	if url == "" {
+		return fmt.Errorf("URL is required")
+	}
+	if !strings.HasPrefix(url, "http://") && !strings.HasPrefix(url, "https://") {
+		return fmt.Errorf("invalid URL '%s': must start with 'http://' or 'https://'", url)
+	}
+	return nil
+}
+
+func AddProtocolToURLIfNeeded(url string) string {
+	url = strings.TrimSpace(url)
+	if !strings.HasPrefix(url, PROTOCOL_HTTP) && !strings.HasPrefix(url, PROTOCOL_HTTPS) {
+		url = PROTOCOL_HTTPS + url
+	}
+	return url
 }

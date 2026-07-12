@@ -1,18 +1,11 @@
 package sul
 
 import (
-	"os"
 	"testing"
 	"time"
-
-	"github.com/juju/loggo"
 )
 
-var logger = loggo.GetLogger("")
-
 func init() {
-	logger.SetLogLevel(loggo.INFO)
-	loggo.ReplaceDefaultWriter(loggo.NewSimpleWriter(os.Stderr, LocalLoggoFormatter))
 }
 
 func TestDatesHumanRendered(t *testing.T) {
@@ -38,6 +31,34 @@ func TestCamelCase(t *testing.T) {
 	AssertString(t, "Full Lower Case", CamelCase("full lower case"))
 	AssertString(t, "Full Upper Case", CamelCase("FULL UPPER CASE"))
 	AssertString(t, "Mixed Case", CamelCase("mIXED cAsE"))
+}
+
+func TestSplitAny(t *testing.T) {
+	var tests = []struct {
+		name       string
+		input      string
+		separators string
+		expected   int
+	}{
+		{"Test 1", "A,B,C,D", ", ", 4},
+		{"Test 2", "A B C D", ", ", 4},
+		{"Test 3", "A;B;C;D;", ", ", 1},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			res := SplitAny(tt.input, tt.separators)
+			size := len(res)
+			AssertInt(t, tt.expected, size)
+		})
+	}
+}
+
+func TestContains(t *testing.T) {
+	AssertBool(t, true, ContainsI("ABCdefGHI", "ABC"))
+	AssertBool(t, true, ContainsI("ABCdefGHI", "abc"))
+	AssertBool(t, true, Contains("ABCdefGHI", "abc", true))
+	AssertBool(t, false, Contains("ABCdefGHI", "abc", false))
 }
 
 func TestSlice(t *testing.T) {

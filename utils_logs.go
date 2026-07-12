@@ -1,5 +1,7 @@
 package sul
 
+/*
+
 import (
 	"fmt"
 	"path/filepath"
@@ -14,3 +16,4 @@ func LocalLoggoFormatter(entry loggo.Entry) string {
 	filename := filepath.Base(entry.Filename)
 	return fmt.Sprintf("%s %7s %s %s:%d %s", ts, entry.Level, entry.Module, filename, entry.Line, entry.Message)
 }
+*/
