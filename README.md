@@ -15,7 +15,7 @@ Are covered :
 ### Push a new version
 
 ```bash
-TAG="v0.0.7"
+TAG="v0.0.9"
 git add .
 git commit -m"Preparing tag ${TAG}"
 git push origin :refs/tags/${TAG}

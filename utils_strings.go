@@ -125,6 +125,16 @@ func ReplacePlaceholders(template string, replacements map[string]string) string
 	return result
 }
 
+func FileNameExtensionClean(s string) string {
+	if strings.Contains(s, "?") {
+		tokens := strings.Split(s, "?")
+		if len(tokens) > 0 {
+			return tokens[0]
+		}
+	}
+	return strings.TrimSpace(s)
+}
+
 func FileNameWithoutExtension(fileName string) string {
 	if pos := strings.LastIndexByte(fileName, '.'); pos != -1 {
 		return fileName[:pos]
