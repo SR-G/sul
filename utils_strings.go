@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"math/rand"
+	"net/url"
 	"regexp"
 	"strings"
 
@@ -158,4 +159,13 @@ func AddProtocolToURLIfNeeded(url string) string {
 		url = PROTOCOL_HTTPS + url
 	}
 	return url
+}
+
+func ExtractDomainFromURL(s string) (string, error) {
+	url, err := url.Parse(AddProtocolToURLIfNeeded(s))
+	if err != nil {
+		return "", err
+	}
+
+	return url.Hostname(), nil
 }

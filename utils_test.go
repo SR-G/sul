@@ -8,6 +8,29 @@ import (
 func init() {
 }
 
+func TestExtractDomainFromURL(t *testing.T) {
+	var tests = []struct {
+		url      string
+		expected string
+	}{
+		{"http://www.domain.tld/", "www.domain.tld"},
+		{"https://www.domain.tld/", "www.domain.tld"},
+		{"https://www.domain.tld", "www.domain.tld"},
+		{"https://www.domain.tld/path/subpath/", "www.domain.tld"},
+		{"www.domain.tld/path/subpath/", "www.domain.tld"},
+		{"domain.tld/path/subpath/", "domain.tld"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.url, func(t *testing.T) {
+			actual, err := ExtractDomainFromURL(tt.url)
+			AssertString(t, tt.expected, actual)
+			AssertBool(t, true, err == nil)
+		})
+	}
+
+}
+
 func TestDatesHumanRendered(t *testing.T) {
 	AssertString(t, "0 ms", HumanizeDuration(0*time.Second))
 	AssertString(t, "5 ms", HumanizeDuration(5*time.Millisecond))
