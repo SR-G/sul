@@ -1,0 +1,5 @@
+__debug*
+bin/
+build/
+distribution/
+*.log
