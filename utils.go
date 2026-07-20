@@ -11,11 +11,12 @@ import (
 )
 
 func humanizeValue(i int64, typeOfValue string) string {
-	if i == 0 {
+	switch i {
+	case 0:
 		return ""
-	} else if i == 1 {
+	case 1:
 		return fmt.Sprintf("%d "+typeOfValue, i)
-	} else {
+	default:
 		if !strings.HasSuffix(typeOfValue, "s") {
 			return fmt.Sprintf("%d "+typeOfValue+"s", i)
 		} else {

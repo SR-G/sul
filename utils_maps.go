@@ -8,7 +8,7 @@ import (
 func HasKey(m any, key string) bool {
 	if m != nil {
 		convertedMap := m.(map[string]any)
-		if convertedMap != nil {
+		if len(convertedMap) > 0 {
 			for k := range convertedMap {
 				if k == key {
 					return true
