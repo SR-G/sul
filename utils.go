@@ -10,6 +10,10 @@ import (
 	"time"
 )
 
+const (
+	DEFAULT_UNKNOWN_HOSTNAME = "unknown"
+)
+
 func humanizeValue(i int64, typeOfValue string) string {
 	switch i {
 	case 0:
@@ -37,15 +41,6 @@ func HumanizeFileSize(b int64) string {
 	}
 	return fmt.Sprintf("%.1f %cB",
 		float64(b)/float64(div), "kMGTPE"[exp])
-}
-
-func IsExtensionAllowed(fileExtension string, allowedExtensions []string) bool {
-	for _, ext := range allowedExtensions {
-		if strings.EqualFold(fileExtension, ext) {
-			return true
-		}
-	}
-	return false
 }
 
 // humanizeDuration humanizes time.Duration output to a meaningful value,
@@ -108,6 +103,10 @@ func HumanizeDuration(duration time.Duration) string {
 	return strings.TrimSpace(result) // strings.TrimSpace(d + " " + h + " " + m + " " + s)
 }
 
+func IsExtensionAllowed(allowedExtensions []string, fileExtension string) bool {
+	return IsSliceContainingValueI(allowedExtensions, fileExtension)
+}
+
 func Unmarshal(raw json.RawMessage, destination interface{}) error {
 	err := json.Unmarshal(raw, &destination)
 	if err != nil {
@@ -116,16 +115,20 @@ func Unmarshal(raw json.RawMessage, destination interface{}) error {
 	return nil
 }
 
+func GetEnv(key string) string {
+	return strings.TrimSpace(os.Getenv(key))
+}
+
 func GetEnvWithDefaultString(key string, defaultValue string) string {
 	value := os.Getenv(key)
 	if value == "" {
-		return defaultValue
+		return strings.TrimSpace(defaultValue)
 	}
-	return value
+	return strings.TrimSpace(value)
 }
 
 func GetEnvWithDefaultInt(key string, defaultValue int) int {
-	value := os.Getenv(key)
+	value := strings.TrimSpace(os.Getenv(key))
 	if value == "" {
 		return defaultValue
 	}
@@ -137,7 +140,7 @@ func GetEnvWithDefaultInt(key string, defaultValue int) int {
 }
 
 func GetEnvWithDefaultBool(key string, defaultValue bool) bool {
-	value := os.Getenv(key)
+	value := strings.TrimSpace(os.Getenv(key))
 	if value == "" {
 		return defaultValue
 	}
@@ -156,4 +159,16 @@ func PrettyPrintJson(data any) (string, error) {
 	} else {
 		return string(b), nil
 	}
+}
+
+func GetHostname() string {
+	return GetHostnameWithCustomDefault(DEFAULT_UNKNOWN_HOSTNAME)
+}
+
+func GetHostnameWithCustomDefault(s string) string {
+	hostname, err := os.Hostname()
+	if err != nil {
+		return s
+	}
+	return hostname
 }

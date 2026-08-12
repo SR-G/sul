@@ -40,7 +40,11 @@ func (tpe *ThreadPoolExecutor[T]) StartThreads() {
 	tpe.wg = sync.WaitGroup{}
 	tpe.startTimestamp = time.Now()
 
-	tpe.Event("Starting thread pool executor with [" + strconv.Itoa(tpe.NbThreads) + "] number of threads, queue size [" + strconv.Itoa(tpe.QueueSize) + "]")
+	if tpe.QueueSize <= 0 {
+		tpe.Event("Starting thread pool executor with [" + strconv.Itoa(tpe.NbThreads) + "] number of threads, unbuffered channels")
+	} else {
+		tpe.Event("Starting thread pool executor with [" + strconv.Itoa(tpe.NbThreads) + "] number of threads, channels queue size [" + strconv.Itoa(tpe.QueueSize) + "]")
+	}
 
 	for i := 0; i < tpe.NbThreads; i++ {
 		tpe.wg.Add(1)

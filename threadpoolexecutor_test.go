@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestTPEWithQueueSize(t *testing.T) {
+func TestTPEWithQueueSizeSmallerThanExpectedJobs(t *testing.T) {
 	maxThreads := 5
 	maxJobs := 20
 	queueSize := 2
@@ -15,6 +15,7 @@ func TestTPEWithQueueSize(t *testing.T) {
 	}}
 	tpe.StartThreads()
 
+	// As queue size < jobs, we have to start consumers *before* injecting jobs
 	go func() {
 		for i := range maxJobs {
 			<-tpe.ChannelResults
@@ -33,15 +34,16 @@ func TestTPEWithQueueSize(t *testing.T) {
 	tpe.StopThreads()
 }
 
-func TestTPEWithoutQueueSize(t *testing.T) {
+func TestTPEWithUnbufferedChannels(t *testing.T) {
 	maxThreads := 5
 	maxJobs := 20
-	queueSize := 0
+	queueSize := 0 // will trigger unbuffered channels at GO level
 	tpe := ThreadPoolExecutor[bool]{NbThreads: maxThreads, QueueSize: queueSize, DebugCallback: func(event string) {
 		fmt.Println(" > " + event)
 	}}
 	tpe.StartThreads()
 
+	// As we have unbuffered channels (due to queue size == 0), we have to launch consumers *before* injecting jobs
 	go func() {
 		for i := range maxJobs {
 			<-tpe.ChannelResults
@@ -77,6 +79,7 @@ func TestTPEWithoutQueueSizeAndByStartingProcessingResultsAtTheEnd(t *testing.T)
 		})
 	}
 
+	// As we have queue size >= number of jobs, we can process result channels *after* having injected all jobs
 	for i := range maxJobs {
 		<-tpe.ChannelResults
 		fmt.Println("job : " + strconv.Itoa(i) + " finished")
