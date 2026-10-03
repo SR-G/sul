@@ -1,10 +1,8 @@
-package sul
+package collections
 
 import (
 	"slices"
 	"strings"
-
-	"github.com/samber/lo"
 )
 
 func IsStringFoundInLastEntriesOfSlice(items []string, s string, max int) bool {
@@ -29,13 +27,9 @@ func IsSliceContainingValueI(s []string, searched string) bool {
 	return false
 }
 
+// Alias for slices.Contains, just allows to have the case sensitivie/insensitive searches with the same kind of namings
 func IsSliceContainingValue(s []string, searched string) bool {
-	for _, value := range s {
-		if searched == value {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(s, searched)
 }
 
 func StoreEntriesIntoNewSlice(inputs ...string) []string {
@@ -46,25 +40,19 @@ func StoreEntriesIntoNewSlice(inputs ...string) []string {
 			results = append(results, s)
 		}
 	}
-	results = lo.Uniq(results)
 	slices.Sort(results)
-	return results
+	return slices.Compact(results)
 }
 
 func StoreEntriesIntoExistingSlice(current []string, inputs ...string) []string {
-	results := make([]string, 0)
-	results = append(results, current...)
-	for _, input := range inputs {
-		s := strings.TrimSpace(input)
-		if s != "" {
-			results = append(results, s)
-		}
-	}
-	results = lo.Uniq(results)
+	results := StoreEntriesIntoNewSlice(current...)
+	results = append(results, StoreEntriesIntoNewSlice(inputs...)...)
 	slices.Sort(results)
-	return results
+	return slices.Compact(results)
 }
 
+// Merge several strings slices
+// Deprecated: MergeSlices` is `slices.Concat` (Go 1.22+).
 func MergeSlices(inputs ...[]string) []string {
 	results := make([]string, 0)
 	for _, input := range inputs {

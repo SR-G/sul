@@ -1,25 +1,21 @@
-package sul
+package collections
 
 import (
 	"fmt"
-	"sort"
+	"slices"
 )
 
+// HasKey reports whether m is a map[string]any containing key; any other type yields false.
 func HasKey(m any, key string) bool {
-	if m != nil {
-		convertedMap := m.(map[string]any)
-		if len(convertedMap) > 0 {
-			for k := range convertedMap {
-				if k == key {
-					return true
-				}
-			}
-		}
+	converted, ok := m.(map[string]any)
+	if !ok {
+		return false
 	}
-	return false
+	_, found := converted[key]
+	return found
 }
 
-func FirstKey(m map[string]interface{}) string {
+func FirstKey(m map[string]any) string {
 	for k := range m {
 		return k
 	}
@@ -42,18 +38,14 @@ func ExtractKey(m any, key string) (string, error) {
 	return "", nil
 }
 
+// UniqueNonEmptyElementsOf returns the sorted, de-duplicated, non-empty elements of s.
 func UniqueNonEmptyElementsOf(s []string) []string {
-	unique := make(map[string]bool, len(s))
-	us := make([]string, len(unique))
+	us := make([]string, 0, len(s))
 	for _, elem := range s {
-		if len(elem) != 0 {
-			if !unique[elem] {
-				us = append(us, elem)
-				unique[elem] = true
-			}
+		if elem != "" {
+			us = append(us, elem)
 		}
 	}
-
-	sort.Strings(us)
-	return us
+	slices.Sort(us)
+	return slices.Compact(us)
 }

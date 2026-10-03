@@ -1,4 +1,4 @@
-package sul
+package files
 
 import (
 	"bytes"
@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
-	"net/http"
 	"os"
 	"strings"
 )
@@ -98,19 +97,6 @@ func WriteStringToFile(filename string, content string) error {
 	return nil
 }
 
-func FetchURLContent(url string) (string, error) {
-	resp, err := http.Get(url)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-	return string(body), nil
-}
-
 func AddTrailingSlashIfNeeded(s string) string {
 	if strings.HasSuffix(s, "/") {
 		return s
@@ -126,4 +112,29 @@ func GetFileSize(filename string) (int64, error) {
 	}
 
 	return info.Size(), nil
+}
+
+func ForceMkDirAllAndWipeBeforeIfNeeded(directory string, wipe bool) error {
+	// Delete previous dir
+	// - if --wipe is activated
+	// - and if previously found on disk
+	if wipe {
+		if _, err := os.Stat(directory); err == nil {
+			if err = os.RemoveAll(directory); err != nil {
+				return fmt.Errorf("can't delete directory %q", directory)
+			}
+		}
+	}
+
+	// In all other situations, recreate the target dir
+	// - directory was found on disk, with wipe activated, and has been deleted
+	// - directory was found or not
+	return ForceMkDirAll(directory)
+}
+
+func ForceMkDirAll(directory string) error {
+	if err := os.MkdirAll(directory, 0o755); err != nil {
+		return fmt.Errorf("unable to create output directory %q: %w", directory, err)
+	}
+	return nil
 }

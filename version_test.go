@@ -1,6 +1,10 @@
 package sul
 
-import "testing"
+import (
+	"testing"
+
+	sultest "github.com/SR-G/sul/tests"
+)
 
 func TestVersionGetVersion(t *testing.T) {
 	tests := []struct {
@@ -32,7 +36,7 @@ func TestVersionGetVersion(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			AssertString(t, tt.expected, tt.version.GetVersion())
+			sultest.Assert(t, tt.expected, tt.version.GetVersion())
 		})
 	}
 }
@@ -92,7 +96,7 @@ func TestVersionString(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			AssertString(t, tt.expected, tt.version.String())
+			sultest.Assert(t, tt.expected, tt.version.String())
 		})
 	}
 }
@@ -109,11 +113,11 @@ func TestNewVersion(t *testing.T) {
 
 	v := NewVersion("my-app")
 
-	AssertString(t, "my-app", v.ApplicationName)
-	AssertString(t, "9.9.9", v.Version)
-	AssertString(t, "TEST", v.VersionLabel)
-	AssertString(t, "Codename", v.VersionName)
-	AssertString(t, ExtractCommitFromRuntime(), v.Commit)
-	AssertString(t, ExtractBuildTimeFromRuntime(), v.CompilationTimestamp)
-	AssertBool(t, ExtractBuildCommitedFromRuntime(), v.HasEverythingBeenCommited)
+	sultest.Assert(t, "my-app", v.ApplicationName)
+	sultest.Assert(t, "9.9.9", v.Version)
+	sultest.Assert(t, "TEST", v.VersionLabel)
+	sultest.Assert(t, "Codename", v.VersionName)
+	sultest.Assert(t, ExtractCommitFromRuntime(), v.Commit)
+	sultest.Assert(t, ExtractBuildTimeFromRuntime(), v.CompilationTimestamp)
+	sultest.Assert(t, ExtractBuildCommitedFromRuntime(), v.HasEverythingBeenCommited)
 }

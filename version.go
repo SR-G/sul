@@ -2,7 +2,6 @@ package sul
 
 import (
 	"bytes"
-	"fmt"
 	"runtime/debug"
 	"strconv"
 )
@@ -43,10 +42,10 @@ func NewVersion(applicationName string) *Version {
 	return v
 }
 
-// Return just the base version "Version-VersionLabel" (1.0.0-SNAPSHOT, etc.)
+// GetVersion returns just the base version "Version-VersionLabel" (1.0.0-SNAPSHOT, etc.)
 func (v *Version) GetVersion() string {
 	var buf bytes.Buffer
-	buf.WriteString(fmt.Sprintf("%s", v.Version))
+	buf.WriteString(v.Version)
 	if v.VersionLabel != "" {
 		buf.WriteString("-")
 		buf.WriteString(v.VersionLabel)
@@ -54,10 +53,12 @@ func (v *Version) GetVersion() string {
 	return buf.String()
 }
 
-// Return full version, with all informations
+// String returns the full version, with all information.
 func (v *Version) String() string {
 	var buf bytes.Buffer
-	buf.WriteString(fmt.Sprintf("%s %s", v.ApplicationName, v.Version))
+	buf.WriteString(v.ApplicationName)
+	buf.WriteString(" ")
+	buf.WriteString(v.Version)
 	if v.VersionLabel != "" {
 		buf.WriteString("-")
 		buf.WriteString(v.VersionLabel)
@@ -75,9 +76,9 @@ func (v *Version) String() string {
 	if v.Commit != "" {
 		buf.WriteString("\nGit commit hash: ")
 		buf.WriteString(v.Commit)
-	}
-	if !v.HasEverythingBeenCommited {
-		buf.WriteString(" (some changes uncommited)")
+		if !v.HasEverythingBeenCommited {
+			buf.WriteString(" (some changes uncommited)")
+		}
 	}
 	return buf.String()
 }
