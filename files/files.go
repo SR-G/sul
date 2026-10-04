@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/fs"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -137,4 +138,13 @@ func ForceMkDirAll(directory string) error {
 		return fmt.Errorf("unable to create output directory %q: %w", directory, err)
 	}
 	return nil
+}
+
+func ExpandHomeDirectoryIfNeeded(path string) string {
+	if strings.HasPrefix(path, "~/") {
+		dirname, _ := os.UserHomeDir()
+		return filepath.Join(dirname, path[2:])
+	} else {
+		return path
+	}
 }
