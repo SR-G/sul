@@ -19,7 +19,7 @@ Are covered (one import path per sub-package, `github.com/SR-G/sul/<name>`):
 ### Push a new version
 
 ```bash
-TAG="v0.1.0"
+TAG="v0.1.1"
 git add .
 git commit -m"Preparing tag ${TAG}"
 git push origin :refs/tags/${TAG}
